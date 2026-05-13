@@ -1,5 +1,24 @@
 {
-  "generated_at": "2026-05-06T13:55:48.767297",
+  "generated_at": "2026-05-13T14:21:25.085258",
   "month": "2026-May",
-  "kbs": {}
+  "kbs": {
+    "Windows Server 2016": [
+      "KB5087537"
+    ],
+    "Windows Server 2019": [
+      "KB5087538"
+    ],
+    "Microsoft .NET Framework 3.5 AND 4.8 on Windows Server 2022": [
+      "KB5087068"
+    ],
+    "Windows Server 2022": [
+      "KB5087545"
+    ],
+    "Microsoft .NET Framework 3.5 AND 4.8.1 on Windows Server 2022": [
+      "KB5087059"
+    ],
+    "Windows Server 2025": [
+      "KB5087539"
+    ]
+  }
 }
