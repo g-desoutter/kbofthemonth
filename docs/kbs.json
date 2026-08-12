@@ -1,39 +1,43 @@
 {
-  "generated_at": "2026-07-29T13:56:42.527870",
-  "month": "2026-Jul",
+  "generated_at": "2026-08-12T12:55:59.828222",
+  "month": "2026-Aug",
   "kbs": {
     "Windows Server 2016": [
-      "KB5099535"
+      "KB5120418",
+      "KB5094122"
     ],
     "Windows Server 2019": [
-      "KB5099538"
+      "KB5120238",
+      "KB5094123"
     ],
     "Microsoft .NET Framework 4.8 on Windows Server 2016": [
-      "KB5101007"
+      "KB5120702"
     ],
     "Microsoft .NET Framework 3.5 AND 4.8 on Windows Server 2019": [
-      "KB5101008"
+      "KB5120703"
     ],
     "Microsoft .NET Framework 3.5 AND 4.8 on Windows Server 2022": [
-      "KB5101010"
-    ],
-    "Microsoft .NET Framework 3.5 AND 4.7.2 on Windows Server 2016": [
-      "KB5099535"
+      "KB5120705"
     ],
     "Microsoft .NET Framework 3.5 AND 4.7.2 on Windows Server 2019": [
-      "KB5100989"
+      "KB5120698"
+    ],
+    "Microsoft .NET Framework 3.5 AND 4.6.2/4.7/4.7.1/4.7.2 on Windows Server 2016": [
+      "KB5120418"
     ],
     "Windows Server 2022": [
-      "KB5099540"
+      "KB5123303",
+      "KB5120242"
     ],
     "Microsoft .NET Framework 3.5 AND 4.8.1 on Windows Server 2022": [
-      "KB5101005"
+      "KB5120714"
     ],
     "Microsoft .NET Framework 3.5 AND 4.8.1 on Windows Server 2025": [
-      "KB5101003"
+      "KB5120708"
     ],
     "Windows Server 2025": [
-      "KB5099536"
+      "KB5094125",
+      "KB5120233"
     ]
   }
 }
