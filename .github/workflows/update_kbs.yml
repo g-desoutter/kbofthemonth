@@ -2,31 +2,36 @@ name: Update KBs
 
 on:
   schedule:
-    - cron: '0 12 * * 3'  # Tous les mercredis à midi (Patch Tuesday = mardi, données dispo le mercredi)
-  workflow_dispatch:        # Permet de lancer manuellement depuis GitHub
+    - cron: '0 12 * * 3'   # mercredi 12h UTC (Patch Tuesday = mardi)
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+    permissions:
+      contents: write
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+          cache: pip
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt
 
-      - name: Run script
+      - name: Generate kbs.json
         run: python main.py
 
-      - name: Commit and push kbs.json
+      - name: Commit and push
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/kbs.json
-          git commit -m "Update KBs - ${{ github.run_id }}" || echo "No changes"
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update KBs (${{ github.run_id }})"
           git push
