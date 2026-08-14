@@ -1,19 +1,279 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KB of the Month</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KB of the Month — Windows Server</title>
+<meta name="description" content="KB de sécurité mensuelles pour Windows Server 2016/2019/2022/2025, en JSON.">
+<style>
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --fg: #1a1d21;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --accent: #2563eb;
+  --accent-soft: #eff6ff;
+  --code-bg: #f3f4f6;
+  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 12px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117;
+    --card: #161b22;
+    --fg: #e6edf3;
+    --muted: #8b949e;
+    --border: #262c36;
+    --accent: #58a6ff;
+    --accent-soft: #12243d;
+    --code-bg: #1c2128;
+    --shadow: 0 1px 2px rgba(0,0,0,.4);
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 68rem; margin: 0 auto; padding: 0 1.25rem 4rem; }
+
+/* ---------- hero ---------- */
+header {
+  background: #0d1117; color: #e6edf3;
+  padding: 4rem 0 3.5rem; margin-bottom: -1.5rem;
+  text-align: center; border-bottom: 1px solid #21262d;
+}
+header .wrap { padding-bottom: 0; }
+.logo {
+  font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+  font-size: clamp(.42rem, 1.55vw, .95rem);
+  line-height: 1.12; color: #58a6ff;
+  margin: 0 0 2rem; white-space: pre; overflow-x: auto;
+  background: none; padding: 0;
+}
+header h1 {
+  margin: 0; font-size: clamp(1.25rem, 2.6vw, 1.75rem);
+  font-weight: 600; letter-spacing: -.015em;
+}
+.tagline {
+  margin: .75rem auto 0; max-width: 34rem;
+  color: #8b949e; font-size: .975rem;
+}
+.links {
+  display: flex; justify-content: center; flex-wrap: wrap;
+  gap: .6rem; margin-top: 2rem;
+}
+.links a {
+  color: #e6edf3; text-decoration: none;
+  border: 1px solid #30363d; border-radius: 6px;
+  padding: .45rem 1.1rem; font-size: .875rem;
+  transition: border-color .15s, background .15s;
+}
+.links a:hover { border-color: #58a6ff; background: #161b22; }
+
+/* ---------- contenu ---------- */
+.panel {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: var(--shadow); padding: 1.25rem 1.4rem; margin: 2.5rem 0 1.5rem;
+}
+.panel h2 {
+  margin: 0 0 .6rem; font-size: .78rem; text-transform: uppercase;
+  letter-spacing: .09em; color: var(--muted); font-weight: 600;
+}
+.snippet { display: flex; align-items: stretch; gap: .5rem; }
+.snippet code {
+  flex: 1; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: .7rem .9rem; font-size: .875rem;
+  font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+  overflow-x: auto; white-space: nowrap;
+}
+button {
+  border: 1px solid var(--border); background: var(--card); color: var(--fg);
+  border-radius: 8px; padding: 0 1rem; font-size: .875rem; font-weight: 500;
+  cursor: pointer; transition: background .15s, border-color .15s;
+}
+button:hover { background: var(--accent-soft); border-color: var(--accent); }
+
+.toolbar {
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;
+  justify-content: space-between; margin: 2rem 0 1rem;
+}
+.stamp { color: var(--muted); font-size: .875rem; }
+.stamp strong { color: var(--fg); }
+input[type=search] {
+  border: 1px solid var(--border); background: var(--card); color: var(--fg);
+  border-radius: 8px; padding: .5rem .85rem; font-size: .9rem; min-width: 15rem;
+}
+input[type=search]:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+.grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); }
+.card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: var(--shadow); padding: 1.1rem 1.25rem;
+  transition: transform .15s, box-shadow .15s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.09); }
+.card h3 { margin: 0 0 .2rem; font-size: 1rem; letter-spacing: -.01em; }
+.card .count { color: var(--muted); font-size: .8rem; margin-bottom: .8rem; }
+.kbs { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+/* ---------- badge KB : copie + lien ---------- */
+.kb-group { display: inline-flex; align-items: stretch; }
+.kb {
+  background: var(--accent-soft); color: var(--accent);
+  border: 1px solid transparent; border-right: none;
+  border-radius: 6px 0 0 6px; padding: .22rem .6rem;
+  font-size: .82rem; font-weight: 600;
+  font-family: ui-monospace, Menlo, monospace;
+  cursor: pointer; transition: border-color .15s, background .15s, color .15s;
+}
+.kb-link {
+  display: flex; align-items: center;
+  background: var(--accent-soft); color: var(--accent); text-decoration: none;
+  border: 1px solid transparent; border-left: 1px solid var(--border);
+  border-radius: 0 6px 6px 0; padding: 0 .45rem; font-size: .75rem;
+  transition: border-color .15s;
+}
+.kb-group:hover .kb,
+.kb-group:hover .kb-link { border-color: var(--accent); }
+.kb-group:hover .kb-link { border-left-color: var(--accent); }
+.kb.copied { background: var(--accent); color: #fff; border-color: var(--accent); }
+.none { color: var(--muted); font-style: italic; font-size: .875rem; }
+
+footer {
+  margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+  color: var(--muted); font-size: .875rem; display: flex; flex-wrap: wrap; gap: 1rem;
+}
+a { color: var(--accent); }
+.state { color: var(--muted); padding: 2rem 0; }
+</style>
 </head>
 <body>
-  <h1>KB of the Month</h1>
-  <p>
-    Les KB de sécurité mensuelles pour Windows Server 2016, 2019, 2022 et 2025,
-    extraites du flux CVRF du MSRC et republiées en JSON.
-    Mise à jour automatique chaque mercredi suivant le Patch Tuesday.
-  </p>
-  <p><a href="kbs.json">kbs.json</a></p>
-  <pre>Invoke-RestMethod https://g-desoutter.github.io/kbofthemonth/kbs.json</pre>
-  <p><a href="https://github.com/g-desoutter/kbofthemonth">Code source</a></p>
+
+<header>
+  <div class="wrap">
+<pre class="logo" aria-label="KBOTM">
+█   █  ████    ███   █████  █   █
+█  █   █   █  █   █    █    ██ ██
+███    ████   █   █    █    █ █ █
+█  █   █   █  █   █    █    █   █
+█   █  ████    ███     █    █   █
+</pre>
+    <h1>Les KB de sécurité Windows Server, en JSON</h1>
+    <p class="tagline">
+      Extraites chaque mois du flux CVRF officiel du MSRC.
+      Server 2016, 2019, 2022 et 2025.
+    </p>
+    <nav class="links">
+      <a href="kbs.json">JSON</a>
+      <a href="https://github.com/g-desoutter/kbofthemonth">GitHub</a>
+      <a href="https://api.msrc.microsoft.com/cvrf/v3.0/cvrf">API MSRC</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="panel">
+    <h2>Consommer le flux</h2>
+    <div class="snippet">
+      <code id="snippet">Invoke-RestMethod https://g-desoutter.github.io/kbofthemonth/kbs.json</code>
+      <button id="copy" type="button">Copier</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="stamp" id="stamp">Chargement…</div>
+    <input type="search" id="filter" placeholder="Filtrer par produit ou KB…" aria-label="Filtrer">
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <div id="state" class="state"></div>
+
+  <footer>
+    <a href="kbs.json">kbs.json</a>
+    <a href="https://github.com/g-desoutter/kbofthemonth">Code source</a>
+    <a href="https://api.msrc.microsoft.com/cvrf/v3.0/cvrf">API MSRC</a>
+  </footer>
+
+</div>
+
+<script>
+const grid   = document.getElementById('grid');
+const state  = document.getElementById('state');
+const stamp  = document.getElementById('stamp');
+const filter = document.getElementById('filter');
+let entries = [];
+
+const esc = s => String(s).replace(/[&<>"]/g, c =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+async function copy(text, el, label = 'copié') {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    el.textContent = 'erreur';
+    setTimeout(() => { el.textContent = el.dataset.kb ?? 'Copier'; }, 1200);
+    return;
+  }
+  const original = el.textContent;
+  el.textContent = label;
+  el.classList.add('copied');
+  setTimeout(() => { el.textContent = original; el.classList.remove('copied'); }, 1000);
+}
+
+function render(term = '') {
+  const q = term.trim().toLowerCase();
+  const shown = entries.filter(([product, kbs]) =>
+    !q || product.toLowerCase().includes(q) ||
+    kbs.some(k => k.toLowerCase().includes(q)));
+
+  grid.innerHTML = shown.map(([product, kbs]) => `
+    <article class="card">
+      <h3>${esc(product)}</h3>
+      <div class="count">${kbs.length} KB</div>
+      <div class="kbs">${
+        kbs.length
+          ? kbs.map(k => `<span class="kb-group"
+              ><button class="kb" type="button" data-kb="${esc(k)}"
+                       title="Copier ${esc(k)}">${esc(k)}</button
+              ><a class="kb-link" target="_blank" rel="noopener"
+                  title="Ouvrir sur support.microsoft.com"
+                  href="https://support.microsoft.com/help/${encodeURIComponent(k.replace(/^KB/i, ''))}">↗</a
+            ></span>`).join('')
+          : '<span class="none">Aucune KB ce mois-ci</span>'
+      }</div>
+    </article>`).join('');
+
+  state.textContent = shown.length ? '' : 'Aucun résultat.';
+}
+
+grid.addEventListener('click', (e) => {
+  const btn = e.target.closest('.kb');
+  if (btn) copy(btn.dataset.kb, btn);
+});
+
+fetch('kbs.json')
+  .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+  .then(data => {
+    entries = Object.entries(data.kbs);
+    const total = entries.reduce((n, [, k]) => n + k.length, 0);
+    const d = new Date(data.generated_at);
+    stamp.innerHTML =
+      `<strong>${esc(data.month)}</strong> · ${total} KB sur ${entries.length} produits ·
+       généré le ${d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+    render();
+  })
+  .catch(e => {
+    stamp.textContent = '';
+    state.textContent = `Impossible de charger kbs.json (${e}).`;
+  });
+
+filter.addEventListener('input', e => render(e.target.value));
+
+document.getElementById('copy').addEventListener('click', (e) =>
+  copy(document.getElementById('snippet').textContent, e.target, 'Copié'));
+</script>
 </body>
 </html>
