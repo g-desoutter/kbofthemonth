@@ -1,97 +1,137 @@
-# 🛡️ MSRC KB Tracker
+<div align="center">
 
-> Suivi automatique des mises à jour de sécurité Microsoft pour Windows Server
+# KB of the Month
 
-![GitHub Actions](https://img.shields.io/github/actions/workflow/status/gdesoutter/kbofthemonth/update_kbs.yml?label=Last%20update&style=flat-square)
-![JSON](https://img.shields.io/badge/format-JSON-blue?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+**Les mises à jour de sécurité mensuelles pour Windows Server, en JSON.**
 
----
+Extraction automatisée du flux CVRF officiel du MSRC, republié chaque mois
+sous forme d'API statique consommable par vos scripts d'inventaire.
 
-## 📋 Description
+[![Update KBs](https://img.shields.io/github/actions/workflow/status/g-desoutter/kbofthemonth/update_kbs.yml?branch=main&label=update&style=flat-square)](https://github.com/g-desoutter/kbofthemonth/actions)
+[![Pages](https://img.shields.io/badge/endpoint-live-2563eb?style=flat-square)](https://g-desoutter.github.io/kbofthemonth/)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
-Ce projet interroge automatiquement l'[API MSRC](https://api.msrc.microsoft.com) chaque semaine et publie les numéros de KB du Patch Tuesday pour les versions suivantes de Windows Server :
+[**Consulter les KB du mois →**](https://g-desoutter.github.io/kbofthemonth/)
 
-- Windows Server 2016
-- Windows Server 2019
-- Windows Server 2022
-- Windows Server 2025
+</div>
 
 ---
 
-## 🔗 Endpoint
+## Le problème
 
-Les données sont disponibles publiquement à cette URL :
+Chaque Patch Tuesday, vérifier qu'un parc Windows Server est à jour suppose de
+savoir *quelle KB* s'applique à *quelle édition*. L'information existe dans le
+flux CVRF du MSRC, mais elle y est noyée dans un document de plusieurs milliers
+de lignes mêlant toutes les gammes de produits Microsoft, où les correctifs
+sont indexés par vulnérabilité et non par système.
+
+Ce projet fait l'extraction une fois, automatiquement, et expose le résultat.
+
+## L'endpoint
 
 ```
-https://gdesoutter.github.io/kbofthemonth/kbs.json
+https://g-desoutter.github.io/kbofthemonth/kbs.json
 ```
-
-### Exemple de réponse
 
 ```json
 {
-  "generated_at": "2026-02-21T00:45:25.383236",
-  "month": "2026-Feb",
+  "generated_at": "2026-08-14T19:28:40.727955+00:00",
+  "month": "2026-Aug",
   "kbs": {
-    "Windows Server 2016": ["KB5075999"],
-    "Windows Server 2019": ["KB5075904"],
-    "Windows Server 2022": ["KB5075906"],
-    "Windows Server 2025": ["KB5075899"]
+    "Microsoft .NET Framework 3.5 AND 4.8 on Windows Server 2022": ["KB5120705"],
+    "Windows Server 2016": ["KB5094122", "KB5120418"],
+    "Windows Server 2019": ["KB5094123", "KB5120238"],
+    "Windows Server 2022": ["KB5120242", "KB5123303"]
   }
 }
 ```
 
----
+| Champ | Description |
+|---|---|
+| `generated_at` | Horodatage UTC ISO 8601 de la génération |
+| `month` | Mois du document CVRF source (`AAAA-Mmm`) |
+| `kbs` | Nom complet du produit → liste triée des KB, préfixées `KB` |
 
-## ⚙️ Fonctionnement
+Les clés produit reprennent les libellés exacts du MSRC : outre les éditions
+Windows Server, on y trouve les déclinaisons .NET Framework, qui font l'objet
+de correctifs distincts.
 
-```
-API MSRC (cvrf/v3.0)
-    └── Extraction des ProductID Windows Server
-    └── Filtrage des remediations (Type=2, hors Hotpatch)
-    └── Génération du kbs.json
-    └── Publication via GitHub Pages
-```
+## Utilisation
 
-Le workflow tourne automatiquement **chaque mercredi à midi** (le lendemain du Patch Tuesday) et peut aussi être déclenché manuellement depuis l'onglet **Actions** de ce repo.
-
----
-
-## 🚀 Utilisation
-
-### Depuis PowerShell
+**PowerShell**
 
 ```powershell
-Invoke-RestMethod -Uri "https://gdesoutter.github.io/kbofthemonth/kbs.json"
+$catalog = Invoke-RestMethod 'https://g-desoutter.github.io/kbofthemonth/kbs.json'
+$catalog.kbs.'Windows Server 2022'
 ```
 
-### Depuis Python
+**Python**
 
 ```python
 import requests
-data = requests.get("https://gdesoutter.github.io/kbofthemonth/kbs.json").json()
-print(data["kbs"])
+
+catalog = requests.get(
+    "https://g-desoutter.github.io/kbofthemonth/kbs.json", timeout=30
+).json()
+print(catalog["month"], catalog["kbs"]["Windows Server 2025"])
 ```
 
-### Depuis curl
+**curl + jq**
 
 ```bash
-curl https://gdesoutter.github.io/kbofthemonth/kbs.json
+curl -s https://g-desoutter.github.io/kbofthemonth/kbs.json \
+  | jq -r '.kbs["Windows Server 2019"][]'
 ```
 
----
+## Fonctionnement
 
-## 🛠️ Stack
+```
+API MSRC — cvrf/v3.0/cvrf/{AAAA-Mmm}
+  │
+  ├─ Filtrage produits     Windows Server 2016/2019/2022/2025, hors Server Core
+  ├─ Filtrage remédiations Type=2 (mise à jour de sécurité), hors Hotpatch
+  ├─ Sortie déterministe   produits et KB triés, dédoublonnés
+  │
+  ├─→ docs/kbs.json        commité uniquement si le contenu change
+  └─→ GitHub Pages         endpoint public + interface de consultation
+```
 
-- **Python 3.12**
-- **GitHub Actions** — automatisation
-- **GitHub Pages** — exposition du JSON
-- **API MSRC** — source des données
+Le workflow s'exécute chaque **mercredi à 12h00 UTC**, au lendemain du Patch
+Tuesday, et reste déclenchable à la main depuis l'onglet Actions.
 
----
+Deux garde-fous notables. Si le document CVRF du mois courant n'est pas encore
+publié — cas du premier mercredi du mois — le script bascule sur le mois
+précédent plutôt que d'échouer. Et si les KB extraites sont identiques à celles
+déjà publiées, le fichier n'est pas réécrit : aucun commit parasite, et
+l'historique ne contient que de vrais changements.
 
-## 📅 Source des données
+## Développement
 
-Les données proviennent de l'API officielle Microsoft Security Response Center :
-[https://api.msrc.microsoft.com](https://api.msrc.microsoft.com)
+```bash
+git clone https://github.com/g-desoutter/kbofthemonth.git
+cd kbofthemonth
+pip install -r requirements.txt
+
+python main.py                      # régénère docs/kbs.json
+python -m http.server -d docs 8000  # prévisualise la page sur localhost:8000
+```
+
+Le script écrit ses diagnostics sur `stderr` et renvoie un code de sortie non
+nul si le document est indisponible, vide, ou ne contient aucun produit
+correspondant — de quoi faire échouer le job franchement plutôt que de publier
+un catalogue tronqué.
+
+## Stack
+
+Python 3.12 · GitHub Actions · GitHub Pages · [API MSRC](https://api.msrc.microsoft.com)
+
+## Limites
+
+Les données sont fournies telles qu'extraites du MSRC, sans validation
+indépendante. Une même KB peut apparaître sous plusieurs libellés produit
+lorsque Microsoft l'associe à plusieurs ProductID. Ce projet n'est ni affilié
+ni approuvé par Microsoft.
+
+## Licence
+
+MIT — voir [LICENSE](LICENSE).
