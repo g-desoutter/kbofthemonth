@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T15:57:34.253338+00:00",
+  "generated_at": "2026-09-30T17:27:20.320648+00:00",
   "month": "2026-Sep",
   "kbs": {
     "HEVC Video Extensions from Device Manufacturer on Windows Server 2019": [
@@ -14,7 +14,7 @@
     "Microsoft .NET Framework 3.5 AND 4.6.2/4.7/4.7.1/4.7.2 on Windows Server 2016": [
       "KB5123099"
     ],
-    "Microsoft .NET Framework 3.5 AND 4.6.2/4.7/4.7.1/4.7.2 on Windows Server 2019": [
+    "Microsoft .NET Framework 3.5 AND 4.7.2 on Windows Server 2019": [
       "KB5126043"
     ],
     "Microsoft .NET Framework 3.5 AND 4.8 on Windows Server 2019": [
