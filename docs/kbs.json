@@ -1,57 +1,30 @@
 {
-  "generated_at": "2026-10-14T16:21:18.714492+00:00",
-  "month": "2026-Oct",
+  "generated_at": "2026-11-11T19:08:53.867648+00:00",
+  "month": "2026-Nov",
   "kbs": {
-    "HEVC Video Extensions from Device Manufacturer on Windows Server 2019": [
-      "KBRelease Notes"
-    ],
-    "HEVC Video Extensions from Device Manufacturer on Windows Server 2022": [
-      "KBRelease Notes"
-    ],
-    "HEVC Video Extensions from Device Manufacturer on Windows Server 2025": [
-      "KBRelease Notes"
-    ],
-    "Microsoft .NET Framework 3.5 AND 4.6.2/4.7/4.7.1/4.7.2 on Windows Server 2016": [
-      "KB5126868"
-    ],
-    "Microsoft .NET Framework 3.5 AND 4.6.2/4.7/4.7.1/4.7.2 on Windows Server 2019": [
-      "KB5127666"
-    ],
-    "Microsoft .NET Framework 3.5 AND 4.8 on Windows Server 2019": [
-      "KB5127685"
-    ],
-    "Microsoft .NET Framework 3.5 AND 4.8 on Windows Server 2022": [
-      "KB5127687"
-    ],
-    "Microsoft .NET Framework 3.5 AND 4.8.1 on Windows Server 2022": [
-      "KB5127693"
-    ],
-    "Microsoft .NET Framework 3.5 AND 4.8.1 on Windows Server 2025": [
-      "KB5127690"
-    ],
-    "Microsoft .NET Framework 4.8 on Windows Server 2016": [
-      "KB5127684"
-    ],
     "Windows Server 2016": [
-      "KB5099535",
       "KB5123099",
-      "KB5126649",
-      "KB5126868"
+      "KB5126868",
+      "KB5131083",
+      "KB5131291"
     ],
     "Windows Server 2019": [
-      "KB5099538",
       "KB5122876",
-      "KB5126651"
+      "KB5126651",
+      "KB5131085"
     ],
     "Windows Server 2022": [
-      "KB5099540",
       "KB5122882",
-      "KB5126655"
+      "KB5126655",
+      "KB5131090"
     ],
     "Windows Server 2025": [
-      "KB5099536",
+      "KB5120233",
       "KB5122871",
-      "KB5126646"
+      "KB5126646",
+      "KB5131077",
+      "KB5131080",
+      "KB5135386"
     ]
   }
 }
